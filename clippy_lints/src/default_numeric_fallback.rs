@@ -185,12 +185,10 @@ impl<'tcx> Visitor<'tcx> for NumericFallbackVisitor<'_, 'tcx> {
                 }
             },
 
-            ExprKind::Struct(_, fields, base) => {
+            ExprKind::Struct(qpath, fields, base) => {
                 let ty = self.cx.typeck_results().expr_ty(expr);
-                if let Some(adt_def) = ty.ty_adt_def()
-                    && adt_def.is_struct()
-                    && let Some(variant) = adt_def.variants().iter().next()
-                {
+                if let Some(adt_def) = ty.ty_adt_def() {
+                    let variant = adt_def.variant_of_res(self.cx.qpath_res(qpath, expr.hir_id));
                     let fields_def = &variant.fields;
 
                     // Push field type then visit each field expr.

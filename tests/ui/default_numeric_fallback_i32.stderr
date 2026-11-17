@@ -122,31 +122,37 @@ LL |         let x: _ = generic_arg(1);
    |                                ^ help: consider adding suffix: `1_i32`
 
 error: default numeric fallback might occur
-  --> tests/ui/default_numeric_fallback_i32.rs:133:28
+  --> tests/ui/default_numeric_fallback_i32.rs:147:28
    |
 LL |         GenericStruct { x: 1 };
    |                            ^ help: consider adding suffix: `1_i32`
 
 error: default numeric fallback might occur
-  --> tests/ui/default_numeric_fallback_i32.rs:137:36
+  --> tests/ui/default_numeric_fallback_i32.rs:151:36
    |
 LL |         let _ = GenericStruct { x: 1 };
    |                                    ^ help: consider adding suffix: `1_i32`
 
 error: default numeric fallback might occur
-  --> tests/ui/default_numeric_fallback_i32.rs:156:24
+  --> tests/ui/default_numeric_fallback_i32.rs:183:24
    |
 LL |         GenericEnum::X(1);
    |                        ^ help: consider adding suffix: `1_i32`
 
 error: default numeric fallback might occur
-  --> tests/ui/default_numeric_fallback_i32.rs:177:23
+  --> tests/ui/default_numeric_fallback_i32.rs:193:65
+   |
+LL |         let _: StructVariants<_> = StructVariants::Generic { x: 1 };
+   |                                                                 ^ help: consider adding suffix: `1_i32`
+
+error: default numeric fallback might occur
+  --> tests/ui/default_numeric_fallback_i32.rs:214:23
    |
 LL |         s.generic_arg(1);
    |                       ^ help: consider adding suffix: `1_i32`
 
 error: default numeric fallback might occur
-  --> tests/ui/default_numeric_fallback_i32.rs:188:25
+  --> tests/ui/default_numeric_fallback_i32.rs:225:25
    |
 LL |         inline!(let x = 22;);
    |                         ^^ help: consider adding suffix: `22_i32`
@@ -154,22 +160,22 @@ LL |         inline!(let x = 22;);
    = note: this error originates in the macro `__inline_mac_fn_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: default numeric fallback might occur
-  --> tests/ui/default_numeric_fallback_i32.rs:231:29
+  --> tests/ui/default_numeric_fallback_i32.rs:268:29
    |
 LL |         let data_i32 = vec![1, 2, 3];
    |                             ^ help: consider adding suffix: `1_i32`
 
 error: default numeric fallback might occur
-  --> tests/ui/default_numeric_fallback_i32.rs:231:32
+  --> tests/ui/default_numeric_fallback_i32.rs:268:32
    |
 LL |         let data_i32 = vec![1, 2, 3];
    |                                ^ help: consider adding suffix: `2_i32`
 
 error: default numeric fallback might occur
-  --> tests/ui/default_numeric_fallback_i32.rs:231:35
+  --> tests/ui/default_numeric_fallback_i32.rs:268:35
    |
 LL |         let data_i32 = vec![1, 2, 3];
    |                                   ^ help: consider adding suffix: `3_i32`
 
-error: aborting due to 28 previous errors
+error: aborting due to 29 previous errors
 

@@ -125,9 +125,23 @@ mod struct_ctor {
         x: T,
     }
 
+    union ConcreteUnion {
+        x: i32,
+    }
+
+    impl ConcreteStruct {
+        fn new() -> Self {
+            // Should NOT lint this because the field type is bound to a concrete type.
+            Self { x: 1 }
+        }
+    }
+
     fn test() {
         // Should NOT lint this because the field type is bound to a concrete type.
         ConcreteStruct { x: 1 };
+
+        // Should NOT lint this because the field type is bound to a concrete type.
+        let _ = ConcreteUnion { x: 1 };
 
         // Should lint this because the field type is inferred to `i32` and NOT bound to a concrete type.
         GenericStruct { x: 1 };
@@ -148,12 +162,35 @@ mod enum_ctor {
         X(T),
     }
 
+    enum StructVariants<T> {
+        Unit,
+        Concrete { x: i32 },
+        Generic { x: T },
+    }
+
+    impl StructVariants<u8> {
+        fn new() -> Self {
+            // Should NOT lint this because the field type is bound to a concrete type.
+            Self::Concrete { x: 1 }
+        }
+    }
+
     fn test() {
         // Should NOT lint this because the field type is bound to a concrete type.
         ConcreteEnum::X(1);
 
         // Should lint this because the field type is inferred to `i32` and NOT bound to a concrete type.
         GenericEnum::X(1);
+        //~^ default_numeric_fallback
+
+        // Should NOT lint this because the field type is bound to a concrete type.
+        let _: StructVariants<u8> = StructVariants::Concrete { x: 1 };
+
+        // Should NOT lint this because the field type is bound to a concrete type.
+        let _ = || StructVariants::<u8>::Concrete { x: 2 };
+
+        // Should lint this because the field type is inferred to `i32` and NOT bound to a concrete type.
+        let _: StructVariants<_> = StructVariants::Generic { x: 1 };
         //~^ default_numeric_fallback
     }
 }
