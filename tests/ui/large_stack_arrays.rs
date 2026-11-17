@@ -27,6 +27,38 @@ pub static DOESNOTLINT2: [u8; 512_001] = {
     [x; 512_001]
 };
 
+mod issue18066 {
+    struct Holder;
+
+    impl Holder {
+        const INHERENT: &'static [u8] = &[0; 512_001];
+
+        fn method() {
+            let _x = [0u8; 512_001];
+            //~^ ERROR: allocating a local array larger than 16384 bytes
+        }
+    }
+
+    trait Listed {
+        const TRAIT_DEFAULT: &'static [u8] = &[0; 512_001];
+        const TRAIT_REQUIRED: &'static [u8];
+
+        fn provided() {
+            let _x = [0u8; 512_001];
+            //~^ ERROR: allocating a local array larger than 16384 bytes
+        }
+    }
+
+    impl Listed for Holder {
+        const TRAIT_REQUIRED: &'static [u8] = &[0; 512_001];
+    }
+
+    fn inline_const() {
+        let _x = const { [0u8; 512_001] };
+        //~^ ERROR: allocating a local array larger than 16384 bytes
+    }
+}
+
 fn issue_10741() {
     #[derive(Copy, Clone)]
     struct Large([u32; 2048]);

@@ -1,15 +1,39 @@
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:38:14
+  --> tests/ui/large_stack_arrays.rs:37:22
+   |
+LL |             let _x = [0u8; 512_001];
+   |                      ^^^^^^^^^^^^^^
+   |
+   = help: consider allocating on the heap with `vec![0u8; 512_001].into_boxed_slice()`
+   = note: `-D clippy::large-stack-arrays` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::large_stack_arrays)]`
+
+error: allocating a local array larger than 16384 bytes
+  --> tests/ui/large_stack_arrays.rs:47:22
+   |
+LL |             let _x = [0u8; 512_001];
+   |                      ^^^^^^^^^^^^^^
+   |
+   = help: consider allocating on the heap with `vec![0u8; 512_001].into_boxed_slice()`
+
+error: allocating a local array larger than 16384 bytes
+  --> tests/ui/large_stack_arrays.rs:57:26
+   |
+LL |         let _x = const { [0u8; 512_001] };
+   |                          ^^^^^^^^^^^^^^
+   |
+   = help: consider allocating on the heap with `vec![0u8; 512_001].into_boxed_slice()`
+
+error: allocating a local array larger than 16384 bytes
+  --> tests/ui/large_stack_arrays.rs:70:14
    |
 LL |     let _x = [build(); 3];
    |              ^^^^^^^^^^^^
    |
    = help: consider allocating on the heap with `vec![build(); 3].into_boxed_slice()`
-   = note: `-D clippy::large-stack-arrays` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[allow(clippy::large_stack_arrays)]`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:41:14
+  --> tests/ui/large_stack_arrays.rs:73:14
    |
 LL |     let _y = [build(), build(), build()];
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -17,7 +41,7 @@ LL |     let _y = [build(), build(), build()];
    = help: consider allocating on the heap with `vec![build(), build(), build()].into_boxed_slice()`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:47:9
+  --> tests/ui/large_stack_arrays.rs:79:9
    |
 LL |         [0u32; 20_000_000],
    |         ^^^^^^^^^^^^^^^^^^
@@ -25,7 +49,7 @@ LL |         [0u32; 20_000_000],
    = help: consider allocating on the heap with `vec![0u32; 20_000_000].into_boxed_slice()`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:49:9
+  --> tests/ui/large_stack_arrays.rs:81:9
    |
 LL |         [S { data: [0; 32] }; 5000],
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -33,7 +57,7 @@ LL |         [S { data: [0; 32] }; 5000],
    = help: consider allocating on the heap with `vec![S { data: [0; 32] }; 5000].into_boxed_slice()`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:51:9
+  --> tests/ui/large_stack_arrays.rs:83:9
    |
 LL |         [Some(""); 20_000_000],
    |         ^^^^^^^^^^^^^^^^^^^^^^
@@ -41,7 +65,7 @@ LL |         [Some(""); 20_000_000],
    = help: consider allocating on the heap with `vec![Some(""); 20_000_000].into_boxed_slice()`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:53:9
+  --> tests/ui/large_stack_arrays.rs:85:9
    |
 LL |         [E::T(0); 5000],
    |         ^^^^^^^^^^^^^^^
@@ -49,7 +73,7 @@ LL |         [E::T(0); 5000],
    = help: consider allocating on the heap with `vec![E::T(0); 5000].into_boxed_slice()`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:55:9
+  --> tests/ui/large_stack_arrays.rs:87:9
    |
 LL |         [0u8; usize::MAX],
    |         ^^^^^^^^^^^^^^^^^
@@ -57,7 +81,7 @@ LL |         [0u8; usize::MAX],
    = help: consider allocating on the heap with `vec![0u8; usize::MAX].into_boxed_slice()`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:99:13
+  --> tests/ui/large_stack_arrays.rs:131:13
    |
 LL |     let y = [x, x, dummy!(x), x, x];
    |             ^^^^^^^^^^^^^^^^^^^^^^^
@@ -65,7 +89,7 @@ LL |     let y = [x, x, dummy!(x), x, x];
    = help: consider allocating on the heap with `vec![x, x, dummy!(x), x, x].into_boxed_slice()`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:76:13
+  --> tests/ui/large_stack_arrays.rs:108:13
    |
 LL |     macro_rules! dummy {
 ...
@@ -76,7 +100,7 @@ LL |     let y = dummy![x => x];
    |             -------------- in this macro invocation
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:104:20
+  --> tests/ui/large_stack_arrays.rs:136:20
    |
 LL |     let y = dummy![[x, x, x, x, x]];
    |                    ^^^^^^^^^^^^^^^
@@ -84,13 +108,13 @@ LL |     let y = dummy![[x, x, x, x, x]];
    = help: consider allocating on the heap with `vec![x, x, x, x, x].into_boxed_slice()`
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:107:39
+  --> tests/ui/large_stack_arrays.rs:139:39
    |
 LL |     let y = proc_macros::make_it_big!([x; 1]);
    |                                       ^^^^^^
 
 error: allocating a local array larger than 16384 bytes
-  --> tests/ui/large_stack_arrays.rs:88:23
+  --> tests/ui/large_stack_arrays.rs:120:23
    |
 LL |     macro_rules! create_then_move {
 LL |         ($id:ident; $n:literal) => {{
@@ -100,5 +124,5 @@ LL |             let _x_ = [$id; $n];
 LL |     let y = vec![create_then_move![x; 5]; 5];
    |                  ----------------------- in this macro invocation
 
-error: aborting due to 12 previous errors
+error: aborting due to 15 previous errors
 

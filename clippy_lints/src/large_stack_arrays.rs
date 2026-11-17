@@ -5,7 +5,7 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::macros::macro_backtrace;
 use clippy_utils::source::snippet;
 use clippy_utils::{is_from_proc_macro, sym};
-use rustc_hir::{Expr, ExprKind, Item, ItemKind, Node};
+use rustc_hir::{Body, BodyOwnerKind, Expr, ExprKind, Item, ItemKind, Node};
 use rustc_lint::{LateContext, LateLintPass, impl_lint_pass};
 use rustc_middle::ty;
 use rustc_middle::ty::layout::LayoutOf as _;
@@ -63,14 +63,14 @@ impl LargeStackArrays {
 }
 
 impl<'tcx> LateLintPass<'tcx> for LargeStackArrays {
-    fn check_item(&mut self, _: &LateContext<'tcx>, item: &'tcx Item<'tcx>) {
-        if matches!(item.kind, ItemKind::Static(..) | ItemKind::Const(..)) {
+    fn check_body(&mut self, cx: &LateContext<'tcx>, body: &Body<'tcx>) {
+        if is_const_or_static_body(cx, body) {
             self.const_item_counter += 1;
         }
     }
 
-    fn check_item_post(&mut self, _: &LateContext<'tcx>, item: &'tcx Item<'tcx>) {
-        if matches!(item.kind, ItemKind::Static(..) | ItemKind::Const(..)) {
+    fn check_body_post(&mut self, cx: &LateContext<'tcx>, body: &Body<'tcx>) {
+        if is_const_or_static_body(cx, body) {
             self.const_item_counter -= 1;
         }
     }
@@ -121,6 +121,13 @@ impl<'tcx> LateLintPass<'tcx> for LargeStackArrays {
             );
         }
     }
+}
+
+fn is_const_or_static_body(cx: &LateContext<'_>, body: &Body<'_>) -> bool {
+    matches!(
+        cx.tcx.hir_body_owner_kind(cx.tcx.hir_body_owner_def_id(body.id())),
+        BodyOwnerKind::Const { inline: false } | BodyOwnerKind::Static(_)
+    )
 }
 
 /// Only giving help messages if the expr does not contains macro expanded codes.
